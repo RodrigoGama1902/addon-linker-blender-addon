@@ -6,6 +6,18 @@ from .draw_preferences import draw_preferences
 
 class ALINKER_AddonPrefs(bpy.types.AddonPreferences):    
     bl_idname = ADDON_NAME
+    
+    auto_get_addon_name : bpy.props.BoolProperty(name="Auto Get Addon Name", default=True) # type:ignore
+    
+    get_addon_name_mode : bpy.props.EnumProperty(
+        name="Get Addon Name Mode",
+        default = 'INIT_INFO',
+        items = [
+            ('DIRECTORY_NAME', "Directory Name", "Get addon name from selected directory name"),      
+            ('PREVIOUS_DIRECTORY_NAME', "Previous Directory Name", "Get addon name from previous directory name"),
+            ('INIT_INFO', "Init Info", "Get addon name from __init__.py info"),
+        ]
+    ) #type:ignore
 
     def draw(self, context):
         draw_preferences(self, context)

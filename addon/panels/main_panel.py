@@ -15,10 +15,10 @@ class ALINKER_PT_MainPanel(ObjPanel, bpy.types.Panel):
         layout.use_property_decorate = False
         
         row = layout.row()
-        row.prop(props, "addon_name")
-        row = layout.row()
         row.prop(props, "addon_directory_path")
-        
+        row = layout.row()
+        row.prop(props, "addon_name")
+               
         row = layout.row()
         op = row.operator("alinker.link_single_addon", text="Link Add-on", icon='LINKED')
         op.addon_name = props.addon_name
