@@ -20,6 +20,8 @@ class ALINKER_PT_MainPanel(ObjPanel, bpy.types.Panel):
         row.prop(props, "addon_name")
                
         row = layout.row()
+        row.scale_y = 1.5
+        
         op = row.operator("alinker.link_single_addon", text="Link Add-on", icon='LINKED')
         op.addon_name = props.addon_name
         op.original_addon_path = props.addon_directory_path

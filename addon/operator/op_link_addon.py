@@ -42,12 +42,18 @@ class ALINKER_OP_LinkSingleAddon(bpy.types.Operator):
             self.report({'ERROR'}, "Addon directory path is not a directory")
             return {'CANCELLED'}
         
+        new_addon_path = self.get_new_addon_path(self.addon_name)
+        
+        if os.path.exists(new_addon_path):
+            self.report({'ERROR'}, "Addon already exists: " + new_addon_path)
+            return {'CANCELLED'}
+        
         try:
-            self.create_mklink(self.original_addon_path, self.get_new_addon_path(self.addon_name))
+            self.create_mklink(self.original_addon_path, new_addon_path)
         except OSError:
             self.report({'ERROR'}, "Permission denied, restart Blender as administrator")
             return {'CANCELLED'}
      
-        self.report({'INFO'},"FINISHED")
+        self.report({'INFO'},"Finished, restart Blender to load the add-on")
         return {'FINISHED'}
 
