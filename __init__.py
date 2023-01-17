@@ -1,9 +1,9 @@
 bl_info = {
-    "name": "Base Addon",
-    "description": "Base Addon Description",
+    "name": "AddonLinker",
+    "description": "Link any add-on from directory",
     "author": "Rodrigo Gama",
     "version": (0, 1, 0),
-    "blender": (3, 2, 0),
+    "blender": (3, 3, 0),
     "location": "View3D",
     "category": "3D View"}
 
