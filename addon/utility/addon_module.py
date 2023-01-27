@@ -1,10 +1,37 @@
 import os
+import ast
 
 from ..utility.functions import get_prefs
-from ..utility.parse_init_file import parse_init_file
 
-def get_addon_module_name(addon_directory):
+def adjust_line(line):
+    return line.rstrip().strip(" ") 
+
+def parse_init_file(filepath) -> dict:
     
+    dict_lines = []
+    
+    with open(filepath, 'r') as file:
+        lines = file.readlines()
+        
+        add_lines = False
+        
+        for line in lines:
+            
+            if add_lines:
+                dict_lines.append(adjust_line(line))
+            
+            if "{" in line:
+                dict_lines.append(adjust_line("{" + line.split("{")[1]))
+                add_lines = True
+            if "}" in line:
+                add_lines = False
+    
+    dict_string = "".join(dict_lines)
+    return ast.literal_eval(dict_string)
+    
+def get_addon_module_name(init_path):
+    
+    addon_directory = os.path.dirname(init_path)
     prefs = get_prefs()
 
     if prefs.get_addon_name_mode == 'DIRECTORY_NAME':
@@ -19,8 +46,16 @@ def get_addon_module_name(addon_directory):
     
     if prefs.get_addon_name_mode == 'INIT_INFO':
         
-        init_path = os.path.join(addon_directory, "__init__.py")
         init_dict = parse_init_file(init_path)
         return init_dict["name"]
+
+def get_addon_version(init_path) -> str:
+    
+    init_dict = parse_init_file(init_path)
+    
+    version_string = "v " + str(init_dict["version"]).replace("(", "").replace(")", "").replace(",", ".").replace(" ", "")
+    
+    return version_string
+
     
     

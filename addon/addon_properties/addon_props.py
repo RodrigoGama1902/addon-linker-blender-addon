@@ -8,6 +8,7 @@ class ALINKER_AddonToLink(bpy.types.PropertyGroup):
     
     name : bpy.props.StringProperty(name="Addon Name", default="")
     directory : bpy.props.StringProperty(name="Addon Directory Path", subtype='DIR_PATH')
+    version : bpy.props.StringProperty(name="Addon Version", default="")
     link : bpy.props.BoolProperty(name="Link", default=True)
                 
 class ALINKER_AddonMainProps(bpy.types.PropertyGroup):

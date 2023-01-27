@@ -1,10 +1,10 @@
 
 
-from .op_link_addon import ALINKER_OP_LinkSingleAddon
+from .op_link_addons import ALINKER_OP_LinkAddons
 
 
 classes = (
-    ALINKER_OP_LinkSingleAddon,
+    ALINKER_OP_LinkAddons,
 )
 
 

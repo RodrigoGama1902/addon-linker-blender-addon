@@ -4,10 +4,10 @@ import os
 from ..utility.paths import get_addons_path
 
 
-class ALINKER_OP_LinkSingleAddon(bpy.types.Operator):
+class ALINKER_OP_LinkAddons(bpy.types.Operator):
     """Base Operator Description"""
 
-    bl_idname = "alinker.link_single_addon"
+    bl_idname = "alinker.link_addons"
     bl_label = "Link Single Add-on"
     bl_options = {'REGISTER', 'UNDO'}
         

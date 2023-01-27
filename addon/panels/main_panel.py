@@ -30,4 +30,4 @@ class ALINKER_PT_MainPanel(ObjPanel, bpy.types.Panel):
         row = layout.row()
         row.scale_y = 1.5
         
-        row.operator("alinker.link_single_addon", text="Addon Directory", icon='LINKED')
+        row.operator("alinker.link_addons", icon='LINKED')
