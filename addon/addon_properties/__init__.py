@@ -1,9 +1,9 @@
 import bpy
 
-from .addon_props import ALINKER_AddonMainProps
+from .addon_props import ALINKER_AddonMainProps, ALINKER_AddonToLink
 
 classes = (
-    ALINKER_AddonMainProps,
+    ALINKER_AddonToLink, ALINKER_AddonMainProps
 )
 
 def register_properties():

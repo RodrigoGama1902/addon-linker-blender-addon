@@ -13,6 +13,9 @@ def register_addon():
     
     from ..addon_properties import register_properties
     register_properties()
+    
+    from ..ui_lists import register_ui_lists
+    register_ui_lists()
 
 def unregister_addon():
 
@@ -27,5 +30,8 @@ def unregister_addon():
     
     from ..addon_properties import unregister_properties
     unregister_properties()
+    
+    from ..ui_lists import unregister_ui_lists
+    unregister_ui_lists()
 
 

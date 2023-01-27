@@ -10,10 +10,7 @@ class ALINKER_OP_LinkSingleAddon(bpy.types.Operator):
     bl_idname = "alinker.link_single_addon"
     bl_label = "Link Single Add-on"
     bl_options = {'REGISTER', 'UNDO'}
-    
-    addon_name : bpy.props.StringProperty(name="Addon Name", default="") #type:ignore
-    original_addon_path : bpy.props.StringProperty(name="Addon Directory Path", subtype='DIR_PATH') #type:ignore
-    
+        
     @staticmethod
     def create_mklink(src : str, dst : str) -> None:
         '''Creates a MKlink from src to dst'''
@@ -30,29 +27,23 @@ class ALINKER_OP_LinkSingleAddon(bpy.types.Operator):
         print(f"Linked {src} to {dst}")
             
     def get_new_addon_path(self, addon_name):
-        return os.path.join(get_addons_path(), self.addon_name)
+        return os.path.join(get_addons_path(), addon_name)
 
     def execute(self, context):
         
-        if not self.original_addon_path:
-            self.report({'ERROR'}, "No addon directory path specified")
-            return {'CANCELLED'}
-
-        if not os.path.isdir(self.original_addon_path):
-            self.report({'ERROR'}, "Addon directory path is not a directory")
-            return {'CANCELLED'}
+        props = context.scene.addon_linker
         
-        new_addon_path = self.get_new_addon_path(self.addon_name)
-        
-        if os.path.exists(new_addon_path):
-            self.report({'ERROR'}, "Addon already exists: " + new_addon_path)
-            return {'CANCELLED'}
-        
-        try:
-            self.create_mklink(self.original_addon_path, new_addon_path)
-        except OSError:
-            self.report({'ERROR'}, "Permission denied, restart Blender as administrator")
-            return {'CANCELLED'}
+        for addon_module in props.addons_to_link_list:
+            
+            new_addon_path = self.get_new_addon_path(addon_module.name)
+            
+            if os.path.exists(new_addon_path):
+                self.report({'ERROR'}, "Addon already exists: " + new_addon_path)
+            
+            try:
+                self.create_mklink(addon_module.directory, new_addon_path)
+            except OSError:
+                self.report({'ERROR'}, "Permission denied, restart Blender as administrator")
      
         self.report({'INFO'},"Finished, restart Blender to load the add-on")
         return {'FINISHED'}
