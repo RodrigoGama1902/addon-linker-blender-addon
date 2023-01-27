@@ -7,7 +7,7 @@ class ALINKER_UL_AddonModules(bpy.types.UIList):
         row = layout.row()
         
         row.prop(item, "link", text="", emboss=True)
-        row.prop(item, "name", text="", emboss=True)
+        row.prop(item, "name", text="", emboss=False)
         row.prop(item, "version", text="", emboss=False)
 
                 
