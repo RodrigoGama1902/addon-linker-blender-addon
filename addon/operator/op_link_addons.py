@@ -1,14 +1,16 @@
 import bpy
 import os
+import ctypes
 
 from ..utility.paths import get_addons_path
+from ..utility.functions import check_running_as_admin, get_prefs
 
 
 class ALINKER_OP_LinkAddons(bpy.types.Operator):
     """Base Operator Description"""
 
     bl_idname = "alinker.link_addons"
-    bl_label = "Link Single Add-on"
+    bl_label = "Link Add-ons"
     bl_options = {'REGISTER', 'UNDO'}
         
     @staticmethod
@@ -39,12 +41,12 @@ class ALINKER_OP_LinkAddons(bpy.types.Operator):
         
         col = layout.column(align=True)
         
-        for addon_module in props.addons_to_link_list:
-            
-            box = col.box()
-            box.scale_y = 0.9
-            
+        for addon_module in props.addons_to_link_list:            
             if addon_module.link:
+                
+                box = col.box()
+                box.scale_y = 0.9
+            
                 box.label(text=addon_module.name, icon = 'LINKED') 
         
     def invoke(self, context, event):
@@ -61,19 +63,29 @@ class ALINKER_OP_LinkAddons(bpy.types.Operator):
     def execute(self, context):
         
         props = context.scene.addon_linker
+        prefs = get_prefs()
+        
+        if not check_running_as_admin():
+            self.report({'ERROR'}, "Run Blender as administrator")
+            return {'CANCELLED'}
         
         for addon_module in props.addons_to_link_list:
+                        
+            if not addon_module.link:
+                continue
             
             new_addon_path = self.get_new_addon_path(addon_module.name)
             
             if os.path.exists(new_addon_path):
-                self.report({'ERROR'}, "Addon already exists: " + new_addon_path)
-            
-            try:
-                self.create_mklink(addon_module.directory, new_addon_path)
-            except OSError:
-                self.report({'ERROR'}, "Permission denied, restart Blender as administrator")
-     
+                
+                if not prefs.delete_old_addon_directory_if_exists:
+                    self.report({'ERROR'}, "Addon module already exists, ignoring: " + new_addon_path)
+                    continue
+                
+                os.remove(new_addon_path)
+
+            self.create_mklink(addon_module.directory, new_addon_path)
+
         self.report({'INFO'},"Finished, restart Blender to load the add-on")
         return {'FINISHED'}
 
