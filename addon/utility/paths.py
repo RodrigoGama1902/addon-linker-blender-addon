@@ -14,3 +14,9 @@ def get_addons_path():
         os.mkdir(addons_folder)
     
     return addons_folder
+
+def convert_to_absolute_path(path):
+    
+    if path.startswith("//"):
+        return os.path.abspath(bpy.path.abspath(path))
+    return path

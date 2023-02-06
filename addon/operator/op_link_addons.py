@@ -59,6 +59,11 @@ class ALINKER_OP_LinkAddons(bpy.types.Operator):
             return {'CANCELLED'}
         
         return context.window_manager.invoke_props_dialog(self)
+    
+    def restart_blender_process(self):
+                
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", bpy.app.binary_path, "", None, 1)
+        bpy.ops.wm.quit_blender()
 
     def execute(self, context):
         
@@ -81,10 +86,17 @@ class ALINKER_OP_LinkAddons(bpy.types.Operator):
                 if not prefs.delete_old_addon_directory_if_exists:
                     self.report({'ERROR'}, "Addon module already exists, ignoring: " + new_addon_path)
                     continue
-                
-                os.remove(new_addon_path)
+                                
+                try:
+                    os.remove(new_addon_path)
+                except PermissionError:
+                    self.report({'ERROR'}, "PermissionError: Add-on module already exists and could not be automatically removed, please remove the add-on and try again: " + addon_module.name)
+                    continue
 
             self.create_mklink(addon_module.directory, new_addon_path)
+        
+        if prefs.auto_restart_blender():
+            self.restart_blender_process()
 
         self.report({'INFO'},"Finished, restart Blender to load the add-on")
         return {'FINISHED'}

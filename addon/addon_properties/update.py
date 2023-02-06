@@ -1,13 +1,14 @@
 import os
 
 from ..utility.addon_module import get_addon_module_name, get_addon_version
+from ..utility.paths import convert_to_absolute_path
 
 def search_for_addons_modules(self, context):
     '''A generator that recursively search for __init__.py files with glob, when find one, stop and return the path'''
         
     found_modules_paths = []
     
-    directory = self.addon_directory_path
+    directory = convert_to_absolute_path(self.addon_directory_path)
     addons_to_link_list = self.addons_to_link_list
     
     addons_to_link_list.clear()

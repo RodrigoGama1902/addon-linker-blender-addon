@@ -1,5 +1,6 @@
 import bpy
 import ctypes
+import os
 
 from .constants import ADDON_NAME
 
@@ -11,6 +12,8 @@ def check_running_as_admin():
         return ctypes.windll.shell32.IsUserAnAdmin()
     except:
         return False
+    
+
 
 
 
