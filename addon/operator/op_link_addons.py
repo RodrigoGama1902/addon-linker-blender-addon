@@ -70,6 +70,8 @@ class ALINKER_OP_LinkAddons(bpy.types.Operator):
         props = context.scene.addon_linker
         prefs = get_prefs()
         
+        restart_blender = True
+        
         if not check_running_as_admin():
             self.report({'ERROR'}, "Run Blender as administrator")
             return {'CANCELLED'}
@@ -91,11 +93,12 @@ class ALINKER_OP_LinkAddons(bpy.types.Operator):
                     os.remove(new_addon_path)
                 except PermissionError:
                     self.report({'ERROR'}, "PermissionError: Add-on module already exists and could not be automatically removed, please remove the add-on and try again: " + addon_module.name)
+                    restart_blender = False
                     continue
 
             self.create_mklink(addon_module.directory, new_addon_path)
         
-        if prefs.auto_restart_blender:
+        if prefs.auto_restart_blender and restart_blender:
             self.restart_blender_process()
 
         self.report({'INFO'},"Finished, restart Blender to load the add-on")
