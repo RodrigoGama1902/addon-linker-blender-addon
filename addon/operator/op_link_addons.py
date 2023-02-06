@@ -95,7 +95,7 @@ class ALINKER_OP_LinkAddons(bpy.types.Operator):
 
             self.create_mklink(addon_module.directory, new_addon_path)
         
-        if prefs.auto_restart_blender():
+        if prefs.auto_restart_blender:
             self.restart_blender_process()
 
         self.report({'INFO'},"Finished, restart Blender to load the add-on")
