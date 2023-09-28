@@ -1,4 +1,4 @@
-import bpy
+import bpy #type:ignore
 import os
 import ctypes
 
@@ -60,9 +60,21 @@ class ALINKER_OP_LinkAddons(bpy.types.Operator):
         
         return context.window_manager.invoke_props_dialog(self)
     
-    def restart_blender_process(self):
+    def restart_blender_process(self, modules_to_enable : list[str]):
+
+        prefs = get_prefs()
+        blender_exr_args = None
+
+        if prefs.auto_activate_addons:
+            blender_exr_args = '--python-expr "'
+            python_expression = "import bpy;"
+            for module in modules_to_enable:
+                python_expression += f"bpy.ops.preferences.addon_enable(module='{module}');"
                 
-        ctypes.windll.shell32.ShellExecuteW(None, "runas", bpy.app.binary_path, "", None, 1)
+            blender_exr_args += f'{python_expression}"'
+            print("Blender args: ", blender_exr_args)
+
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", bpy.app.binary_path, blender_exr_args, None, 1)
         bpy.ops.wm.quit_blender()
 
     def execute(self, context):
@@ -75,6 +87,8 @@ class ALINKER_OP_LinkAddons(bpy.types.Operator):
         if not check_running_as_admin():
             self.report({'ERROR'}, "Run Blender as administrator")
             return {'CANCELLED'}
+        
+        modules_to_enable = []
         
         for addon_module in props.addons_to_link_list:
                         
@@ -96,10 +110,11 @@ class ALINKER_OP_LinkAddons(bpy.types.Operator):
                     restart_blender = False
                     continue
 
+            modules_to_enable.append(addon_module.name)
             self.create_mklink(addon_module.directory, new_addon_path)
         
         if prefs.auto_restart_blender and restart_blender:
-            self.restart_blender_process()
+            self.restart_blender_process(modules_to_enable)
 
         self.report({'INFO'},"Finished, restart Blender to load the add-on")
         return {'FINISHED'}

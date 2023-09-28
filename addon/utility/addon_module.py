@@ -10,8 +10,7 @@ def parse_init_file(filepath) -> dict:
 
     print("Parsing init file: " + filepath)
     
-    dict_lines = []
-    
+    dict_lines = []  
     with open(filepath, 'r') as file:
         lines = file.readlines()
 
@@ -26,7 +25,6 @@ def parse_init_file(filepath) -> dict:
             
             if "bl_info={" in line.replace(" ", ""):
                 start_dict_line = adjust_line("{" + line.split("{")[1])
-                print(start_dict_line)
                 dict_lines.append(adjust_line(start_dict_line))
                 add_lines = True
             if "}" in line and add_lines:
@@ -40,6 +38,11 @@ def get_addon_module_name(init_path):
     
     addon_directory = os.path.dirname(init_path)
     prefs = get_prefs()
+
+    if prefs.get_addon_name_mode == 'ADDON_MODULE_NAME':
+
+        addon_name = os.path.basename(addon_directory)
+        return addon_name
 
     if prefs.get_addon_name_mode == 'DIRECTORY_NAME':
         
@@ -59,7 +62,6 @@ def get_addon_module_name(init_path):
 def get_addon_version(init_path) -> str:
     
     init_dict = parse_init_file(init_path)
-    
     version_string = "v " + str(init_dict["version"]).replace("(", "").replace(")", "").replace(",", ".").replace(" ", "")
     
     return version_string
