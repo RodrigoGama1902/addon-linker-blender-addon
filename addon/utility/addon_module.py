@@ -7,25 +7,32 @@ def adjust_line(line):
     return line.rstrip().strip(" ") 
 
 def parse_init_file(filepath) -> dict:
+
+    print("Parsing init file: " + filepath)
     
     dict_lines = []
     
     with open(filepath, 'r') as file:
         lines = file.readlines()
-        
+
         add_lines = False
         
         for line in lines:
-            
+
             if add_lines:
+                if "#" in line: # Remove comments
+                    line = line.split("#")[0]
                 dict_lines.append(adjust_line(line))
             
-            if "{" in line:
-                dict_lines.append(adjust_line("{" + line.split("{")[1]))
+            if "bl_info={" in line.replace(" ", ""):
+                start_dict_line = adjust_line("{" + line.split("{")[1])
+                print(start_dict_line)
+                dict_lines.append(adjust_line(start_dict_line))
                 add_lines = True
-            if "}" in line:
+            if "}" in line and add_lines:
                 add_lines = False
-    
+                break
+
     dict_string = "".join(dict_lines)
     return ast.literal_eval(dict_string)
     
