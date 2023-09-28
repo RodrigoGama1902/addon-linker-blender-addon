@@ -1,16 +1,24 @@
 import bpy
 
 from .utils.obj_panel import ObjPanel
+from ..utility.functions import check_running_as_admin
 
 class ALINKER_PT_MainPanel(ObjPanel, bpy.types.Panel):
     bl_label = "AddonLinker"
     bl_options = {'DEFAULT_CLOSED'}
 
     def draw(self,context):
+
+        layout = self.layout
+
+        if not check_running_as_admin():
+            box = layout.box()
+            box.label(
+                text="Please run Blender as Administrator",
+                icon = 'ERROR')
+            return
         
         props = context.scene.addon_linker
-        
-        layout = self.layout
 
         row = layout.row()
         row.use_property_split = True
