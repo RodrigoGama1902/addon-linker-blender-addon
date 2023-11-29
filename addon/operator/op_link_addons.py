@@ -5,7 +5,8 @@ import ctypes
 from ..utility.paths import get_addons_path
 from ..utility.functions import check_running_as_admin, get_prefs
 
-
+# TODO - There are multiple places where or some reason, the source and destination link must be checked
+# otherwise it will break, maybe change to Pathlib instead of os.path may fix this
 class ALINKER_OP_LinkAddons(bpy.types.Operator):
     """Base Operator Description"""
 
@@ -14,19 +15,20 @@ class ALINKER_OP_LinkAddons(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
         
     @staticmethod
-    def create_mklink(src : str, dst : str) -> None:
+    def create_mklink(src : str, dst : str) -> bool:
         '''Creates a MKlink from src to dst'''
         
         if not os.path.exists(src):
             print(f"SRC: {src} not found")
-            return
+            return False
         
         if os.path.exists(dst):
             print(f"{dst} already exists")
-            return
+            return False
         
         os.symlink(src, dst)
         print(f"Linked {src} to {dst}")
+        return True
             
     def get_new_addon_path(self, addon_name):
         return os.path.join(get_addons_path(), addon_name)
@@ -111,7 +113,13 @@ class ALINKER_OP_LinkAddons(bpy.types.Operator):
                     continue
 
             modules_to_enable.append(addon_module.name)
-            self.create_mklink(addon_module.directory, new_addon_path)
+            
+            try:     
+                self.create_mklink(addon_module.directory, new_addon_path)
+            except FileExistsError:
+                self.report({'ERROR'}, "FileExistsError: Add-on module already exists and could not be automatically removed, please remove the add-on and try again: " + addon_module.name)
+                restart_blender = False
+                continue
         
         if prefs.auto_restart_blender and restart_blender:
             self.restart_blender_process(modules_to_enable)
