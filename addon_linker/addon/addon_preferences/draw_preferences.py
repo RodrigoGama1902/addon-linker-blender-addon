@@ -11,6 +11,7 @@ def draw_preferences(self, context):
 
     box = layout.box()
     box.prop(self, "auto_restart_blender")
-
+    
     if self.auto_restart_blender:
         box.prop(self, "auto_activate_addons")
+        box.prop(self, "auto_save_preferences")

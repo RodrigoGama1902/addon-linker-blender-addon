@@ -3,7 +3,7 @@ bl_info = {
     "description": "Link any add-on from directory",
     "author": "Rodrigo Gama",
     "version": (0, 1, 3, 1),
-    "blender": (3, 3, 0),
+    "blender": (4, 1, 0),
     "location": "View3D",
     "category": "3D View"}
 

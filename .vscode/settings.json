@@ -1,0 +1,4 @@
+{
+    "blender.addon.loadDirectory": "addon_linker",
+    "python.analysis.typeCheckingMode": "strict",
+}

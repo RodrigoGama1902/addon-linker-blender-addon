@@ -72,10 +72,12 @@ class ALINKER_OP_LinkAddons(bpy.types.Operator):
             python_expression = "import bpy;"
             for module in modules_to_enable:
                 python_expression += f"bpy.ops.preferences.addon_enable(module='{module}');"
+            if prefs.auto_save_preferences:
+                python_expression += "bpy.ops.wm.save_userpref();"
                 
             blender_exr_args += f'{python_expression}"'
             print("Blender args: ", blender_exr_args)
-
+            
         ctypes.windll.shell32.ShellExecuteW(None, "runas", bpy.app.binary_path, blender_exr_args, None, 1)
         bpy.ops.wm.quit_blender()
 

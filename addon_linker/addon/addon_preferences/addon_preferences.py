@@ -31,6 +31,11 @@ class ALINKER_AddonPrefs(bpy.types.AddonPreferences):
         default = True, 
         description="Automatically activate add-ons after restarting Blender",
         name = "Auto Activate Add-ons") #type:ignore
+    
+    auto_save_preferences : bpy.props.BoolProperty(
+        default = True, 
+        description="Automatically save preferences after restarting Blender",
+        name = "Auto Save Preferences") #type:ignore
 
     def draw(self, context):
         draw_preferences(self, context)
